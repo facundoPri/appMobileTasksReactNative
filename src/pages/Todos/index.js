@@ -4,36 +4,47 @@ import { View, Text, StyleSheet, TextInput, StatusBar } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
-
 import { Button } from 'react-native-elements';
+import CheckItem from '../../components/CheckItem';
+import TodoModel from '../../Models/TodoModel';
 
 // import { Container } from './styles';
 
+const data = [new TodoModel('test')];
+
 const styles = StyleSheet.create({
-  conteiner: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   addButton: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 60,
-    width: 60,
-    borderRadius: 50,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
     backgroundColor: '#fff',
-    bottom: 50,
+    bottom: 30,
+    right: 30,
   },
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
   },
   modelContainer: {
-    flexDirection: 'row',
     backgroundColor: '#fff',
-    height: 60,
+    height: 100,
     paddingBottom: 0,
+  },
+  titleForm: {
+    fontSize: 20,
+    color: '#333',
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  modelFormContainer: {
+    flexDirection: 'row',
   },
   todoForm: {
     flex: 1,
@@ -54,8 +65,8 @@ const styles = StyleSheet.create({
 
 export default class Todos extends Component {
   state = {
-    counter: 0,
     modalVisible: false,
+    data,
   };
 
   toggleModal = () => {
@@ -66,9 +77,12 @@ export default class Todos extends Component {
     const { modalVisible } = this.state;
 
     return (
-      <View style={styles.conteiner}>
-        <Text>{String(modalVisible)}</Text>
-
+      <View style={styles.container}>
+        <View>
+          <CheckItem data={this.state.data[0]} />
+          <CheckItem data={this.state.data[0]} />
+          <CheckItem data={this.state.data[0]} />
+        </View>
         <Modal
           isVisible={modalVisible}
           onSwipeComplete={this.toggleModal}
@@ -76,6 +90,7 @@ export default class Todos extends Component {
           onBackdropPress={this.toggleModal}
           style={styles.modal}
           backdropOpacity={0.2}
+          useNativeDriver
         >
           <View style={styles.modelContainer}>
             <StatusBar
@@ -83,20 +98,23 @@ export default class Todos extends Component {
               backgroundColor="rgba(0,0,0,0.2)"
               barStyle="light-content"
             />
-            <TextInput
-              style={styles.todoForm}
-              placeholder="New To-Do"
-              returnKeyType="send"
-              onSubmitEditing={this.toggleModal}
-            />
-            <Button
-              buttonStyle={styles.submitButton}
-              icon={<Icon name="arrow-downward" size={20} color="#000" />}
-              onPress={this.toggleModal}
-            />
+            <Text style={styles.titleForm}>NEW TODO</Text>
+            <View style={styles.modelFormContainer}>
+              <TextInput
+                style={styles.todoForm}
+                placeholder="New To-Do"
+                returnKeyType="send"
+                onSubmitEditing={this.toggleModal}
+                autoFocus
+              />
+              <Button
+                buttonStyle={styles.submitButton}
+                icon={<Icon name="add" size={20} color="#000" />}
+                onPress={this.toggleModal}
+              />
+            </View>
           </View>
         </Modal>
-
         <RectButton style={styles.addButton} onPress={this.toggleModal}>
           <Icon name="add" size={20} color="#000" />
         </RectButton>
