@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 
-import { View, Text, StyleSheet, TextInput, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  StatusBar,
+  FlatList,
+} from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
-import { Button } from 'react-native-elements';
+import { Button, CheckBox } from 'react-native-elements';
 import CheckItem from '../../components/CheckItem';
 import TodoModel from '../../Models/TodoModel';
 
 // import { Container } from './styles';
-
-const data = [new TodoModel('test')];
 
 const styles = StyleSheet.create({
   container: {
@@ -66,22 +71,34 @@ const styles = StyleSheet.create({
 export default class Todos extends Component {
   state = {
     modalVisible: false,
-    data,
+    data: [],
+    NewTodoText: '',
   };
 
   toggleModal = () => {
     this.setState({ modalVisible: !this.state.modalVisible });
   };
 
+  addTodo = () => {
+    const { data, NewTodoText } = this.state;
+    if (!NewTodoText) {
+      return;
+    }
+    const NewTodo = new TodoModel(NewTodoText);
+    this.setState({ data: [...data, NewTodo], NewTodoText: '' });
+  };
+
   render() {
-    const { modalVisible } = this.state;
+    const { modalVisible, NewTodoText, data } = this.state;
 
     return (
       <View style={styles.container}>
         <View>
-          <CheckItem data={this.state.data[0]} />
-          <CheckItem data={this.state.data[0]} />
-          <CheckItem data={this.state.data[0]} />
+          <FlatList
+            data={data}
+            renderItem={({ item }) => <CheckItem data={item} />}
+            keyExtractor={(item) => String(item.createdAt)}
+          />
         </View>
         <Modal
           isVisible={modalVisible}
@@ -104,13 +121,15 @@ export default class Todos extends Component {
                 style={styles.todoForm}
                 placeholder="New To-Do"
                 returnKeyType="send"
-                onSubmitEditing={this.toggleModal}
+                value={NewTodoText}
+                onChangeText={(text) => this.setState({ NewTodoText: text })}
+                onSubmitEditing={this.addTodo}
                 autoFocus
               />
               <Button
                 buttonStyle={styles.submitButton}
                 icon={<Icon name="add" size={20} color="#000" />}
-                onPress={this.toggleModal}
+                onPress={this.addTodo}
               />
             </View>
           </View>
