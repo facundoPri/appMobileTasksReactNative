@@ -11,7 +11,7 @@ import {
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
-import { Button, CheckBox } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import CheckItem from '../../components/CheckItem';
 import TodoModel from '../../Models/TodoModel';
 
@@ -88,16 +88,24 @@ export default class Todos extends Component {
     this.setState({ data: [...data, NewTodo], NewTodoText: '' });
   };
 
+  removeTodo = ({ createdAt }) => {
+    const { data } = this.state;
+    const filteredData = data.filter((item) => item.createdAt !== createdAt);
+    this.setState({ data: filteredData });
+  };
+
   render() {
     const { modalVisible, NewTodoText, data } = this.state;
-
     return (
       <View style={styles.container}>
         <View>
           <FlatList
             data={data}
-            renderItem={({ item }) => <CheckItem data={item} />}
+            renderItem={({ item }) => (
+              <CheckItem function={() => this.removeTodo(item)} data={item} />
+            )}
             keyExtractor={(item) => String(item.createdAt)}
+            showsVerticalScrollIndicator={false}
           />
         </View>
         <Modal

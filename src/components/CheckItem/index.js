@@ -19,20 +19,18 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderStyle: 'solid',
     borderWidth: 1,
+    padding: 10,
   },
   left: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  right: {
-    marginRight: 10,
   },
   todoText: {
     fontSize: 20,
     marginBottom: 3,
   },
   check: {
-    marginHorizontal: 10,
+    marginRight: 10,
   },
   todoTextChecked: {
     color: '#999',
@@ -46,13 +44,9 @@ const styles = StyleSheet.create({
 });
 
 export default class CheckItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todo: this.props.data.todo,
-      checked: this.props.data.checked,
-    };
-  }
+  state = {
+    checked: this.props.data.checked,
+  };
 
   toggleCheck = () => {
     this.setState({ checked: !this.state.checked });
@@ -70,12 +64,14 @@ export default class CheckItem extends Component {
             )}
           </TouchableOpacity>
           {this.state.checked ? (
-            <Text style={styles.todoTextChecked}>{this.state.todo}</Text>
+            <Text style={styles.todoTextChecked}>{this.props.data.todo}</Text>
           ) : (
-            <Text style={styles.todoText}>{this.state.todo}</Text>
+            <Text style={styles.todoText}>{this.props.data.todo}</Text>
           )}
         </View>
-        <IconF style={styles.rigth} name="trash-2" size={25} color="#000" />
+        <TouchableOpacity onPress={this.props.function}>
+          <IconF style={styles.rigth} name="trash-2" size={25} color="#000" />
+        </TouchableOpacity>
       </View>
     );
   }
